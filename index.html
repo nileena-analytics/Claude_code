@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IPA Assist Platform</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div><h1>IPA Assist Platform</h1><small>Intelligent Performance Advisor</small></div>
+  <div class="actions">
+    <button id="back" class="btn ghost" hidden>&larr; Back</button>
+    <button id="fb" class="btn ghost">Feedback</button>
+    <button id="new" class="btn white">+ New chat</button>
+  </div>
+</header>
+
+<section id="home" class="view home">
+  <div class="intro"><h2>What do you want to optimise today?</h2>
+    <p>Ask about any AI model: specs, framework, precision, Intel OpenVINO CPU/GPU/NPU compatibility, driver setup, inference scripts or validation history.</p></div>
+  <div class="cards">
+    <button class="card" data-flow="ask"><span class="tag" style="--c:var(--intel-blue)">Ask</span><b>Ask about any AI model</b><span>Specs, OpenVINO compatibility, drivers, validation history.</span></button>
+    <button class="card" data-flow="guided"><span class="tag" style="--c:var(--accent-violet)">Script</span><b>Get an optimisation script</b><span>Answer a few guided questions, get HF and OV scripts.</span></button>
+    <button class="card" data-flow="ppt"><span class="tag" style="--c:var(--accent-amber)">Upload</span><b>Analyse a PPT</b><span>Upload a deck, ask questions, then run analysis.</span></button>
+    <button class="card" data-flow="tsow"><span class="tag" style="--c:var(--accent-green)">Upload</span><b>Optimise from a TSOW</b><span>Upload a TSOW and run analysis directly.</span></button>
+  </div>
+  <div class="chips">
+    <button class="chip" data-q="Tell me about Qwen3-4B">Tell me about Qwen3-4B</button>
+    <button class="chip" data-q="Is LLaMA-3.1-8B OpenVINO compatible?">Is LLaMA-3.1-8B OpenVINO compatible?</button>
+    <button class="chip" data-q="Is Qwen3-VL-8B-Instruct OpenVINO compatible?">Is Qwen3-VL-8B-Instruct OpenVINO compatible?</button>
+  </div>
+  <form class="composer" data-home><input placeholder="Ask about any AI model" aria-label="Message"><button class="send" aria-label="Send">&uarr;</button></form>
+</section>
+
+<section id="chat" class="view work" hidden>
+  <div class="col">
+    <div id="strip" class="strip"></div>
+    <div id="msgs" class="msgs" aria-live="polite"></div>
+    <form class="composer" id="cform">
+      <input id="cin" placeholder="Type your answer" aria-label="Message" autocomplete="off">
+      <label class="attach">Attach PPT / TSOW<input type="file" id="file" accept=".ppt,.pptx,.doc,.docx,.pdf" hidden></label>
+      <button class="send" aria-label="Send">&uarr;</button>
+    </form>
+  </div>
+  <aside id="panel">
+    <h3>Configuration</h3>
+    <div class="seg" id="seg">
+      <button data-tab="form" class="on">Structured Form</button><button data-tab="ppt">Upload PPT</button><button data-tab="tsow">Upload TSOW</button>
+    </div>
+    <label class="drop" id="drop" for="file" hidden>Drop or choose a file</label>
+    <label>Model *<input id="f-model" placeholder="e.g. ResNet-50, Qwen3-4B, YOLOv6"></label>
+    <label>Platform *<input id="f-platform" placeholder="e.g. Intel Core Ultra 7 265K"></label>
+    <label>Success Criteria *<input id="f-criteria" placeholder="e.g. latency < 60 ms on video"></label>
+    <label>Use Case (Category)<select id="f-usecase"><option value="">Select category</option><option>Vision</option><option>LLM</option><option>Speech</option><option>Other</option></select></label>
+    <label>Script Type<input id="f-script" placeholder="e.g. HF, OpenVINO (optional)"></label>
+    <h4>Validation status</h4><div id="val" class="val"></div>
+    <button id="run" class="btn primary">Submit and Run Analysis</button>
+  </aside>
+</section>
+
+<section id="results" class="view res" hidden>
+  <div class="panelcard">
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <div class="rhead"><h2 id="rtitle"></h2><span class="badge" id="srcBadge">Demo data</span><button id="export" class="btn outline">Export JSON</button></div>
+    <div id="rbody" class="rbody"></div>
+  </div>
+  <button id="fab" class="fab">Ask IPA</button>
+</section>
+
+<div id="toast" class="toast" role="status"></div>
+<script src="app.js"></script>
+</body>
+</html>
