@@ -1,0 +1,117 @@
+Hello everyone.
+Today I will be talking about System 1 Decision models. I have gone through the theoretical understanding of the system one decision models as of now and i am just sharing the things i learned.
+
+------------------------------------------------------------------------------------------------------------
+All of us working with AI today are familiar with LLMs. Most AI software is built around a model that writes. We send a prompt, provide context, and receive a response. We use these responses for summarization, content generation, coding and reasoning. It generates a reply, a summary, a plan, or a block of code.
+
+But many production systems do not need another paragraph. consider an enterprise application that receives thousands of emails, customer requests or transactions. It doesn't really need a paragraph explaining every decision. Often, They need a small judgment that can be used immediately. like,
+- Is this transaction suspicious?
+- Which department should handle this request?
+- What is the priority?
+- Should this operation require human approval?
+This is where System 1 decision models become interesting. Instead of generating language for a person to interpret, they aim to produce structured decisions that software can directly use.
+The System One model is designed for that decision layer. An application sends a piece of state and a set of typed questions. and the model returns bounded answers, probabilities, and confidence signals.
+
+-------------------------------------------------------
+
+The terminology comes from Daniel Kahneman's book Thinking, Fast and Slow.
+
+In human cognition, System 1 represents fast, intuitive thinking, while System 2 represents slower and more deliberate thinking.
+
+This AI terminology borrows this distinction. In this context, System 1 models are optimized for making narrow, structured decisions quickly.
+
+For example, imagine a customer reporting that a payment was deducted twice. Instead of generating a long response, the model can answer three specific questions: which department should receive this query, how urgent is it, and whether a human should review it.
+
+Here the model becomes a decision component inside the software architecture.
+
+---------------------------------------------------------------------------------------------------------------------------
+
+The System One model have a decision-oriented AI interface:
+
+As input - We provide a state, which is the information describing the current situation. 
+Input: text, a JSON object, or an array of text that describes the current state.
+
+Then we define questions that the model needs to answer.
+Questions: typed Choice, Score, or Noul questions with a clear scope.
+
+The output will be 
+Output: answers keyed by the question IDs, with probability and confidence fields where applicable.
+
+Once the output is received, An important architectural distinction is that the model does not own the final business action. the application still controls routing, permissions, thresholds and human approval and the final action.
+
+So, it won't remove the application logic. It will only replace the decision logic with model-generated decision signals.
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+The early decision models provides three fundamental decision primitives.
+
+First, Choice. We use it when the answer must come from a fixed list. For example, should a support ticket go to HR, IT or Finance?
+
+Second, Score. We use it when we need to assess something on an ordered scale. For example, low, medium or high risk.
+
+Third, Noul (Bernoulli/yes-no evaluations). We use it when we want to evaluate a yes-or-no statement. For example, does this operation require human approval?
+
+Noul returns a probability that the answer is yes. Choice and Score expose probabilities across their available alternatives, along with confidence information.
+
+By defining the expected answer space, we make the decision easier to integrate into application code.
+While primitives like Choice, Score, and Noul define the core triad popularized by early System 1 launches, individual model families can customize, extend, or restrict which typed outputs they natively expose.
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+
+Let's compare these two approaches using an employee email.
+
+A generative LLM can read the email, understand the context and produce a detailed explanation. This is useful when we need an explanation or a draft response.
+
+A System 1 model focuses on the actual decisions needed by our application: the department, urgency and human-review requirement.
+
+This difference also affects the architecture.
+
+Generative LLMs generally generate output sequentially, one token after another. 
+But the decision model produces structured outputs through parallel sampling.
+
+
+So one model is not better than the other. It is that they solve different engineering problems.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+One of the most important aspects of these models is the emphasis on probability, confidence and Calibration.
+
+Using this model we can obtain more information about the likelihood of different outcomes.
+
+For example, suppose a risk assessment returns a 75% probability for high risk.
+
+We should not blindly assume that the decision is correct.
+
+Instead, we need to define what happens at different confidence levels.
+
+For a low-risk classification task, we might allow automation at a relatively conservative threshold.
+
+For a financial transaction or a sensitive access-control operation, we may require human approval even when the model is highly confident.
+
+So it is important to,
+- version the threshold 
+- Evaluate accuracy and 
+- measure caliberation
+
+
+Calibration - ensures that A model’s confidence score is honest and matches what actually happens in the real world. 
+For example, 
+weather app - tells you there is an 80% chance of rain on 10 different mornings.
+Well-calibrated : if It actually rains on 8 out of those 10 mornings.
+Poorly calibrated - Overconfident or underconfident
+When it comes to Calibrated models, they let you build safe rules. If a calibrated model says it is 80% sure an email is spam, you know it will be right 8 times out of 10. This allows software to safely trust high-confidence answers (like 99%) and send uncertain ones (like 55%) to a human for review.
+
+
+So even though the confidence level of the decision returned by the model is high, it is important for the app to set threshold, and set Hard rules for sensitive actions.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+This System 1 models introduce an different direction for AI engineering. It provides reliable decisions for Enterprise automation that can be integrated into software.
+
+The future may involve combining different models for different responsibilities - An LLM can understand and generate. A decision model can classify, score and judge. Deterministic application code can enforce permissions and execute actions.
+The real opportunity is designing better AI systems by choosing the right model for each task.
+
+This throws us with one question that : " Are there decisions in our current projects that we could implement more efficiently using this approach?"
+
+Thankyou
